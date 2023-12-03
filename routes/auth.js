@@ -2,6 +2,7 @@
 
 const express = require('express');
 const AuthController = require('../controllers/authController');
+const UserValidator = require('../middleware/validation/userValidator');
 
 class AuthRouter {
   constructor() {
@@ -10,8 +11,8 @@ class AuthRouter {
   }
 
   initializeRoutes() {
-    this.router.post('/register', AuthController.register.bind(AuthController));
-    this.router.post('/login', AuthController.login.bind(AuthController));
+    this.router.post('/register', UserValidator.validateUser(),AuthController.register.bind(AuthController));
+    this.router.post('/login', UserValidator.validateUser(), AuthController.login.bind(AuthController));
   }
 
   getRouter() {
