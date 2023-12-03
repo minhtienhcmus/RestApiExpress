@@ -1,7 +1,8 @@
 // services/UserService.js
 const { User, Token } = require("../models"); // Import your Sequelize User model
 const { generateToken } = require("../middleware/authenticate");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const { logger } = require("../middleware/logger");
 class AuthService {
   constructor() {
     this.User = User; // Assuming you pass the Sequelize User model to the service
@@ -12,6 +13,7 @@ class AuthService {
     try {
       // check user Exist
       const user = await this.User.findOne({ where: { username } });
+
       if (user) {
         return { is_exist: true };
       } else {
@@ -19,14 +21,15 @@ class AuthService {
         // console.log("users====",users.id)
         const token = generateToken(users.id);
         await this.Token.createToken(token, users.id);
-        // console.log(users, token);
+
         return { username: users.username, token: token };
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new Error("Error fetching users");
     }
   }
+
   async login(username, password) {
     try {
       // check user Exist
@@ -46,10 +49,9 @@ class AuthService {
         }
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return { status: 500, message: "server Error" };
-      throw new Error("Error fetching users");
-      
+      // throw new Error("Error fetching users");
     }
   }
   // Add other methods as needed

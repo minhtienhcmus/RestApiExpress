@@ -2,7 +2,7 @@
 
 const express = require('express');
 const UserRouter = require('./userRouter'); // Import UserRouter
-const AuthRouter = require('./auth'); // Import UserRouter
+const AuthRouter = require('./authRouter'); // Import UserRouter
 
 class IndexRouter {
   constructor() {

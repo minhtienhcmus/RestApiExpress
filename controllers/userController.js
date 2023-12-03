@@ -1,6 +1,6 @@
 // controllers/UserController.js
 const UserService = require('../services/userService');
-
+const { logger } = require("../middleware/logger");
 class UserController {
   constructor() {
     this.userService = new UserService();
@@ -8,11 +8,10 @@ class UserController {
 
   async getAllUsers(req, res) {
     try {
-      // console.log("hgfhfhgfh",this.userService)
       const users = await this.userService.getAllUsers();
       res.json({ success: true, users });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
   }

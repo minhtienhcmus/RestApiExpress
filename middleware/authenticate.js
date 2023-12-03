@@ -1,21 +1,22 @@
-const jwt = require('jsonwebtoken');
-const process = require('process');
-require('dotenv').config(); 
-const secret_key = process.env.SECRET_KEY
-const UserService = require('../services/userService');
+const jwt = require("jsonwebtoken");
+const process = require("process");
+require("dotenv").config();
+const secret_key = process.env.SECRET_KEY;
+const UserService = require("../services/userService");
 const userService = new UserService();
+const { logger } = require("./logger");
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, secret_key, { expiresIn: '1h' });
+  return jwt.sign({ id: userId }, secret_key, { expiresIn: "1h" });
 };
 
 const verifyToken = async (req, res, next) => {
-  let token = req.header('Authorization');
+  let token = req.header("Authorization");
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    token = token.replace("Bearer ","");
+    token = token.replace("Bearer ", "");
     const decoded = jwt.verify(token, secret_key);
     const user = await userService.findByPk(decoded.id);
 
@@ -26,7 +27,8 @@ const verifyToken = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Unauthorized' });
+    logger.error(error);
+    res.status(401).json({ message: "Unauthorized" });
   }
 };
 

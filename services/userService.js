@@ -1,6 +1,6 @@
 // services/UserService.js
 const { User } = require('../models'); // Import your Sequelize models
-
+const { logger } = require("../middleware/logger");
 class UserService {
   constructor() {
     this.User = User;
@@ -9,9 +9,10 @@ class UserService {
   async getAllUsers() {
     try {
       const users = await this.User.findAllUsers();
+     
       return users;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new Error('Error fetching users');
     }
   }
@@ -20,7 +21,7 @@ class UserService {
       const users = await this.User.findByPk(id);
       return users;
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new Error('Error fetching users');
     }
   }

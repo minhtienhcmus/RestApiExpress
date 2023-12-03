@@ -1,6 +1,7 @@
 // controllers/UserController.js
 const UserService = require('../services/userService');
 const AuthService = require('../services/authService');
+const { logger } = require("../middleware/logger");
 class AuthController {
   constructor() {
     // this.userService = new UserService();
@@ -9,7 +10,6 @@ class AuthController {
 
   async register(req, res) {
     try {
-        
         const { username, password } = req.body;
         const auth =  await this.authService.register(username, password);
         if(auth.hasOwnProperty('is_exist')){
@@ -18,20 +18,17 @@ class AuthController {
           res.status(200).json(auth);
         }
       } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ message: 'Error registering user' });
       }
   }
   async login(req, res) {
     try {
-        
         const { username, password } = req.body;
         const auth =  await this.authService.login(username, password);
-
         res.status(auth.status).json(auth);
-   
       } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ message: 'Error registering user' });
       }
   }
